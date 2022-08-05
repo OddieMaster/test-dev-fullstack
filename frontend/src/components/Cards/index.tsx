@@ -7,17 +7,11 @@ import CardMedia from "@material-ui/core/CardMedia";
 import Link from "@material-ui/core/Link";
 import Typography from "@material-ui/core/Typography";
 import useStyles from "./styles";
-
-interface props {
-    title: string;
-    description: string;
-    img: string;
-    link: string;
-    className: string;
-  }
+import * as Types from './../../Types'
 
 
-export default function MediaCard(props: props) {
+
+export default function MediaCard(props: Types.CardsProps) {
     const classes = useStyles();
     const { title, description, img, link } = props;
 
