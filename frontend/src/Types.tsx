@@ -20,6 +20,7 @@ interface ExamFormProps {
   handleChangeExam: React.ChangeEvent<HTMLInputElement>;
   errors: DeepMap<FieldValues, FieldError>;
   register: any;
+  control: Control<FieldValues>;
 }
 
 interface handleErrorsHookForm {
