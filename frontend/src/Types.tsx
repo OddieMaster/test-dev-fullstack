@@ -45,7 +45,7 @@ interface SubmitForm {
   addressDetails: string;
   exam: string;
   rg: string;
-  stateq: string;
+  state: string;
   street: string;
   nextAppointment: string;
 }

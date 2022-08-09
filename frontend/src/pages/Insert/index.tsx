@@ -1,5 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Grid, Box, IconButton, Button, Collapse } from "@material-ui/core";
+import {
+    Grid,
+    Box,
+    IconButton,
+    Button,
+    Collapse,
+    CircularProgress,
+} from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import CheckCircleIcon from "@material-ui/icons/CheckCircle";
 import IndeterminateCheckBoxIcon from "@material-ui/icons/IndeterminateCheckBox";
@@ -7,9 +14,9 @@ import { useForm } from "react-hook-form";
 import PatientForms from "../../components/PatientForm";
 import AddressForms from "../../components/AddressForm";
 import ExamForms from "../../components/ExamForm";
-/* import { useHistory } from "react-router-dom"; */
 import useStyles from "./styles";
 import * as Types from "../../Types";
+import { useHistory } from "react-router-dom";
 
 function Insert() {
     const classes = useStyles();
@@ -19,13 +26,13 @@ function Insert() {
     const [PatientIcon, setPatientIcon] = useState(false);
     const [AddressIcon, setAddressIcon] = useState(false);
     const [ExamIcon, setExamIcon] = useState(false);
-
+    const [UpdateButton, setUpdateButton] = useState(true);
     const [Doctor, setDoctor] = useState("");
     const [Exam, setExam] = useState("");
 
     const { handleSubmit, register, errors, control } = useForm({});
 
-    /* let history = useHistory(); */
+    const history = useHistory();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDoctor(event.target.value);
@@ -66,66 +73,73 @@ function Insert() {
     };
 
     async function onSubmit(formData: Types.SubmitForm) {
-        console.log(formData);
+        setUpdateButton(false);
         console.log("formData -> ", formData);
         const requestOptions = {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-                "Access-Control-Allow-Methods": "GET,HEAD,OPTIONS,POST,PUT",
-                "Access-Control-Allow-Headers":
-                    "Origin, X-Requested-With, Content-Type, Accept, Authorization",
             },
             body: JSON.stringify(formData),
         };
-
-        console.log("requestOptions", requestOptions);
-        const response = await fetch(
+        fetch(
             "https://us-central1-teppadevchallenge.cloudfunctions.net/patients",
             requestOptions
-        );
-        const data = await response.json();
-
-        console.log("data Response", data);
+        )
+            .then(function (response) {
+                setUpdateButton(true);
+                window.alert(
+                    "Successfully inserted patient! Returning to the homepage"
+                );
+                history.push("/");
+                //handle success
+                console.log(response);
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
+            });
     }
 
     useEffect(() => {
+        console.log("Entrou no useEffects");
         if (useRef.current) {
             useRef.current = false;
-        } else if (
-            errors.name ||
-            errors.cellphone ||
-            errors.cpf ||
-            errors.rg ||
-            errors.email ||
-            errors.bdate
-        ) {
-            setPatientForm(true);
-            setPatientIcon(false);
-        } else if (
-            errors.street ||
-            errors.residentialNumber ||
-            errors.residentialArea ||
-            errors.city ||
-            errors.stateq
-        ) {
-            setAddressForm(true);
-            setAddressIcon(false);
-        } else if (
-            errors.resquetedBy ||
-            errors.agreement ||
-            errors.nextAppointment ||
-            errors.doctor ||
-            errors.exam
-        ) {
-            setExamForm(true);
-            setExamIcon(false);
+        } else {
+            if (
+                errors.name ||
+                errors.cellphone ||
+                errors.cpf ||
+                errors.rg ||
+                errors.email ||
+                errors.bdate
+            ) {
+                setPatientForm(true);
+                setPatientIcon(false);
+            }
+            if (
+                errors.street ||
+                errors.residentialNumber ||
+                errors.residentialArea ||
+                errors.city ||
+                errors.state
+            ) {
+                setAddressForm(true);
+                setAddressIcon(false);
+            }
+            if (
+                errors.resquetedBy ||
+                errors.agreement ||
+                errors.nextAppointment ||
+                errors.doctor ||
+                errors.exam
+            ) {
+                setExamForm(true);
+                setExamIcon(false);
+            }
         }
     }, [errors]);
-
     const useRef = React.useRef(true);
-
     return (
         <>
             <Box className={classes.initialBox} />
@@ -406,14 +420,21 @@ function Insert() {
                         </Collapse>
                     </Grid>
                     <Grid item xs={12} container justify="space-around">
-                        <Button
-                            variant="contained"
-                            color="primary"
-                            className={classes.button}
-                            type="submit"
-                        >
-                            Update Resume
-                        </Button>
+                        {UpdateButton === true ? (
+                            <Button
+                                variant="contained"
+                                color="primary"
+                                className={classes.button}
+                                type="submit"
+                            >
+                                Update Resume
+                            </Button>
+                        ) : (
+                            <>
+                                {" "}
+                                <CircularProgress />{" "}
+                            </>
+                        )}
                     </Grid>
                 </Grid>
             </form>

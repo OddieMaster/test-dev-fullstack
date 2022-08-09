@@ -1,5 +1,3 @@
-import React from "react";
-
 import { Box, Button, Grid, TextField } from "@material-ui/core";
 import useStyles from "./../../pages/Patients/styles";
 import * as Types from "../../Types";

@@ -407,11 +407,11 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
               )}
 
               <TextField
-                name="stateq"
+                name="state"
                 label="State"
                 margin="normal"
                 type="text"
-                defaultValue={data[Control].stateq}
+                defaultValue={data[Control].state}
                 variant="outlined"
                 inputRef={register({
                   required: true,
@@ -419,15 +419,15 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                   maxLength: 30,
                 })}
               />
-              {errors.stateq && errors.stateq.type === "required" && (
+              {errors.state && errors.state.type === "required" && (
                 <p className={classes.error}>Invalid state</p>
               )}
-              {errors.stateq && errors.stateq.type === "minLength" && (
+              {errors.state && errors.state.type === "minLength" && (
                 <p className={classes.error}>
                   This field required min lenght of 1
                 </p>
               )}
-              {errors.stateq && errors.stateq.type === "maxLength" && (
+              {errors.state && errors.state.type === "maxLength" && (
                 <p className={classes.error}>Max length exceeded</p>
               )}
 
