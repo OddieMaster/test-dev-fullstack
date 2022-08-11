@@ -33,25 +33,21 @@ class ClientDatasource {
     getFilteredPatients = async (
         filter: Types.Filter
     ): Promise<Types.MessageTreatment> => {
-        const patientRef = firestore.collection("patients");
-        console.log("finalfilter", filter);
-
+        let patientRef: admin.firestore.Query =
+            firestore.collection("patients");
         if (filter && filter.bdate) {
-            console.log("Entrou2");
-            patientRef.where("bdate", "==", filter.bdate);
+            patientRef = patientRef.where("bdate", "==", filter.bdate);
         }
-        if (filter && filter.cellphone) {
-            console.log("Entrou3");
-            patientRef.where("cellphone", "==", filter.cellphone);
+        if (filter && filter.name) {
+            patientRef = patientRef
+                .where("name", ">=", filter.name)
+                .where("name", "<=", filter.name + "\uf8ff");
         }
         if (filter && filter.email) {
-            console.log("Entrou4");
-            patientRef.where("email", "==", filter.email);
+            patientRef = patientRef.where("email", "==", filter.email);
         }
         if (filter && filter.rg) {
-            console.log("filter.rg", filter.rg);
-            console.log("Entrou5");
-            patientRef.where("rg", "==", filter.rg);
+            patientRef = patientRef.where("rg", "==", filter.rg);
         }
 
         const result = await patientRef
@@ -82,7 +78,6 @@ class ClientDatasource {
                     error
                 );
             });
-        /*  console.log("result", result); */
         return result;
     };
 

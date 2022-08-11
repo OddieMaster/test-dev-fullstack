@@ -30,15 +30,13 @@ patients.use(function (req, res, next) {
 /* ROTA PATIENTS */
 
 patients.get("/:idPatient", async (req, res) => {
-    console.log("req.query ID PATIENT", req.query);
     res.json(await clientController.getPatientById(req.params.idPatient));
 });
-patients.get("/filter/:cellphone/:rg/:email/:bdate", async (req, res) => {
-    console.log("ENTROU NA QUERY FILTER", req.params);
+patients.get("/filter/:name/:rg/:email/:bdate", async (req, res) => {
     res.json(
         await clientController.getFilteredPatients({
-            cellphone:
-                req.params.cellphone !== "null" ? req.params.cellphone : null,
+            name:
+                req.params.name !== "null" ? req.params.name : null,
             rg: req.params.rg !== "null" ? req.params.rg : null,
             email: req.params.email !== "null" ? req.params.email : null,
             bdate: req.params.bdate !== "null" ? req.params.bdate : null,

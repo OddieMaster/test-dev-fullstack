@@ -20,7 +20,7 @@ interface Patient {
 }
 interface Filter {
     email: string | null;
-    cellphone: string | null;
+    name: string | null;
     rg: string | null;
     bdate: string | null;
 }
