@@ -280,6 +280,13 @@ function Patients() {
             type: "text",
             shrink: true,
         },
+        {
+            id: "doctor",
+            label: "Doctor",
+            value: "doctor",
+            type: "text",
+            shrink: true,
+        },
     ];
 
     return (
