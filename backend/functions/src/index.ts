@@ -1,7 +1,7 @@
 /* eslint-disable max-len */
 
 import * as admin from "firebase-admin";
-import serviceAccount = require("../src/config/teppadevchallenge-firebase-adminsdk-2mexb-e18e460dbc.json");
+import serviceAccount = require("../src/config/teppadevchallenge-firebase-adminsdk-2mexb-ae83cda663.json");
 admin.initializeApp({
     credential: admin.credential.cert(serviceAccount as ServiceAccount),
 });
@@ -21,10 +21,12 @@ appApi.get("/", function (req, res) {
 
 patients.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, DELETE");
     res.header(
         "Access-Control-Allow-Headers",
         "Origin, X-Requested-With, Content-Type, Accept"
     );
+
     next();
 });
 /* ROTA PATIENTS */
@@ -35,8 +37,7 @@ patients.get("/:idPatient", async (req, res) => {
 patients.get("/filter/:name/:rg/:email/:bdate", async (req, res) => {
     res.json(
         await clientController.getFilteredPatients({
-            name:
-                req.params.name !== "null" ? req.params.name : null,
+            name: req.params.name !== "null" ? req.params.name : null,
             rg: req.params.rg !== "null" ? req.params.rg : null,
             email: req.params.email !== "null" ? req.params.email : null,
             bdate: req.params.bdate !== "null" ? req.params.bdate : null,
