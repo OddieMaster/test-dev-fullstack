@@ -9,13 +9,11 @@ import {
 } from "@material-ui/core";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import { useForm } from "react-hook-form";
-/* import { useHistory } from "react-router-dom"; */
 import useStyles from "./styles";
 import * as Types from "./../../Types";
 import PatientsCards from "../../components/PatientsCards";
 import PatientsDialog from "../../components/PatientsDialog";
 import PatientsFilterForm from "../../components/PatientsFilterForm";
-import { useHistory } from "react-router-dom";
 
 function Patients() {
     const classes = useStyles();
@@ -31,7 +29,6 @@ function Patients() {
     const [Doctor, setDoctor] = useState("");
     const [Exam, setExam] = useState("");
     const [infoArrived, setInfoArrived] = useState(false);
-    const history = useHistory();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDoctor(event.target.value);
@@ -42,7 +39,6 @@ function Patients() {
 
     const handleChangeReadOnly = (value: boolean) => {
         setReadOnly(value);
-        console.log("clicou");
     };
 
     const handleChangePage = (
@@ -65,7 +61,6 @@ function Patients() {
         )
             .then(async (response) => {
                 const responseData = await response.json();
-                console.log("data", responseData.response);
                 setData(responseData.response);
                 setInfoArrived(true);
             })
@@ -79,28 +74,32 @@ function Patients() {
     }
 
     function confirmFilterPatients(e: React.SyntheticEvent) {
+        e.preventDefault();
         setInfoArrived(false);
         const target = e.target as typeof e.target & {
-            cellphone: { value: string };
+            name: { value: string };
             rg: { value: string };
             email: { value: string };
             bdate: { value: string };
         };
         const result = {
-            cellphone: target.cellphone.value ? target.cellphone.value : null,
+            name: target.name.value ? target.name.value : null,
             rg: target.rg.value ? target.rg.value : null,
             email: target.email.value ? target.email.value : null,
             bdate: target.bdate.value ? target.bdate.value : null,
         };
-
-        console.log("result", result);
         fetch(
-            `https://us-central1-teppadevchallenge.cloudfunctions.net/patients/filter/${result.cellphone}/${result.rg}/${result.email}/${result.bdate}`
+            `https://us-central1-teppadevchallenge.cloudfunctions.net/patients/filter/${result.name}/${result.rg}/${result.email}/${result.bdate}`
         )
             .then(async (response) => {
                 const responseData = await response.json();
-                setData(responseData.response);
-                setInfoArrived(true);
+                if (responseData.response && responseData.response.length > 0) {
+                    setData(responseData.response);
+                    setInfoArrived(true);
+                } else {
+                    window.alert("No data found!");
+                    window.location.reload();
+                }
             })
             .catch((error) => {
                 console.log("there was an error", error);
@@ -152,7 +151,28 @@ function Patients() {
     };
 
     function onSubmit(formData: Types.SubmitForm) {
-        console.log("formData", formData);
+        formData.id = ControlId;
+        const requestOptions = {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(formData),
+        };
+        fetch(
+            "https://us-central1-teppadevchallenge.cloudfunctions.net/patients",
+            requestOptions
+        )
+            .then(function (response) {
+                window.alert("Successfully updated patient!");
+                window.location.reload();
+                //handle success
+                console.log(response);
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
+            });
     }
     const textFields = [
         {
@@ -295,7 +315,7 @@ function Patients() {
                     <Collapse in={FilterForm === 1}>
                         <form
                             className={classes.form}
-                            onSubmit={confirmFilterPatients}
+                            onSubmit={(e) => confirmFilterPatients(e)}
                         >
                             <PatientsFilterForm />
                         </form>
