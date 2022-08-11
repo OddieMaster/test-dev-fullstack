@@ -55,12 +55,12 @@ function NavBar() {
     },
     {
       id: 2,
-      href: "http://localhost:3000/patients",
+      href: "https://teppadevchallenge.web.app/patients",
       title: "Patients",
     },
     {
       id: 3,
-      href: "http://localhost:3000/insert",
+      href: "https://teppadevchallenge.web.app/insert",
       title: "Insert",
     },
   ];
