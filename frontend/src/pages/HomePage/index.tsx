@@ -39,7 +39,7 @@ function HomePage() {
       </Typography>
       <Box mt={7} />
 
-      <Grid container spacing={2} justify="center">
+      <Grid container spacing={2} justifyContent="center">
         <Zoom in={Grow}>
           <Grid item xs={"auto"} sm={"auto"}>
             <Cards

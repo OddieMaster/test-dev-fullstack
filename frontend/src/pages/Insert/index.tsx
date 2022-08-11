@@ -74,7 +74,6 @@ function Insert() {
 
     async function onSubmit(formData: Types.SubmitForm) {
         setUpdateButton(false);
-        console.log("formData -> ", formData);
         const requestOptions = {
             method: "POST",
             headers: {
@@ -102,7 +101,6 @@ function Insert() {
     }
 
     useEffect(() => {
-        console.log("Entrou no useEffects");
         if (useRef.current) {
             useRef.current = false;
         } else {
@@ -419,7 +417,7 @@ function Insert() {
                             </Box>
                         </Collapse>
                     </Grid>
-                    <Grid item xs={12} container justify="space-around">
+                    <Grid item xs={12} container justifyContent="space-around">
                         {UpdateButton === true ? (
                             <Button
                                 variant="contained"

@@ -46,9 +46,6 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
         data,
     } = props;
 
-    console.log("dataInside", data);
-    console.log("ControlIndex", ControlIndex);
-
     return (
         <Dialog
             open={open}
@@ -166,7 +163,7 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                         >
                             <TextField
                                 label="Name"
-                                name="patient"
+                                name="name"
                                 margin="normal"
                                 defaultValue={data[ControlIndex].name}
                                 type="text"
@@ -177,24 +174,24 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                     maxLength: 40,
                                 })}
                             />
-                            {errors.patient &&
-                                errors.patient.type === "required" && (
+                            {errors.name &&
+                                errors.name.type === "required" && (
                                     <>
                                         <p className={classes.error}>
                                             Invalid Name
                                         </p>
                                     </>
                                 )}
-                            {errors.patient &&
-                                errors.patient.type === "minLength" && (
+                            {errors.name &&
+                                errors.name.type === "minLength" && (
                                     <>
                                         <p className={classes.error}>
                                             This field required min lenght of 5
                                         </p>
                                     </>
                                 )}
-                            {errors.patient &&
-                                errors.patient.type === "maxLength" && (
+                            {errors.name &&
+                                errors.name.type === "maxLength" && (
                                     <>
                                         <p className={classes.error}>
                                             Max length exceeded
@@ -376,7 +373,9 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                 label="Residential Number"
                                 margin="normal"
                                 type="text"
-                                defaultValue={data[ControlIndex].residentialNumber}
+                                defaultValue={
+                                    data[ControlIndex].residentialNumber
+                                }
                                 variant="outlined"
                                 inputRef={register({
                                     required: true,
@@ -404,7 +403,9 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                 label="Area"
                                 margin="normal"
                                 type="text"
-                                defaultValue={data[ControlIndex].residentialArea}
+                                defaultValue={
+                                    data[ControlIndex].residentialArea
+                                }
                                 variant="outlined"
                                 inputRef={register({
                                     required: true,
@@ -561,7 +562,9 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                 label="Next appointment"
                                 margin="normal"
                                 type="datetime-local"
-                                defaultValue={data[ControlIndex].nextAppointment}
+                                defaultValue={
+                                    data[ControlIndex].nextAppointment
+                                }
                                 variant="outlined"
                                 InputLabelProps={{
                                     shrink: true,

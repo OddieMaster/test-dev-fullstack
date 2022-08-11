@@ -9,10 +9,10 @@ export default function PatientsFilterForm() {
             <Grid className={classes.gridInside}>
                 <Grid item className={classes.gridItens}>
                     <TextField
-                        name="cellphone"
-                        label="Cellphone"
+                        name="name"
+                        label="Name"
                         margin="normal"
-                        type="number"
+                        type="text"
                         variant="outlined"
                     />
                 </Grid>
