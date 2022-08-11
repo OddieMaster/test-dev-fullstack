@@ -1,14 +1,12 @@
 import React, { useState, useEffect } from "react";
 import {
     Grid,
-    InputBase,
     Box,
     IconButton,
     Collapse,
     CircularProgress,
+    TablePagination,
 } from "@material-ui/core";
-import SearchIcon from "@material-ui/icons/Search";
-import InputAdornment from "@material-ui/core/InputAdornment";
 import KeyboardArrowDownIcon from "@material-ui/icons/KeyboardArrowDown";
 import { useForm } from "react-hook-form";
 /* import { useHistory } from "react-router-dom"; */
@@ -17,46 +15,23 @@ import * as Types from "./../../Types";
 import PatientsCards from "../../components/PatientsCards";
 import PatientsDialog from "../../components/PatientsDialog";
 import PatientsFilterForm from "../../components/PatientsFilterForm";
+import { useHistory } from "react-router-dom";
 
 function Patients() {
     const classes = useStyles();
     const [FilterForm, setFilterForm] = useState(0);
     const [page, setPage] = useState(0);
     const [rowsPerPage, setRowsPerPage] = useState(12);
-    const [InputFilter, setInputFilter] = useState("");
     const [open, setOpen] = useState(false);
     const [Delete, setDelete] = useState(false);
+    const [ControlIndex, setControlIndex] = useState(0);
     const [ControlId, setControlId] = useState("");
-    const [Control, setControl] = useState(0);
     const [ReadOnly, setReadOnly] = useState(false);
     const { handleSubmit, register, control, errors } = useForm({});
     const [Doctor, setDoctor] = useState("");
     const [Exam, setExam] = useState("");
     const [infoArrived, setInfoArrived] = useState(false);
-    /* let history = useHistory(); */
-
-    /*  const staticData = [
-    {
-      bdate: "2022-08-05",
-      cellphone: "3194962286",
-      city: "Conselheiro Lafaiete",
-      cpf: "077.898.086-30",
-      email: "romualdo.gui@gmail.com",
-      id: "1",
-      requestedBy: "none",
-      doctor: "Jéssica",
-      agreement: "none",
-      name: "Guilherme Eduardo Abreu Romualdo",
-      residentialArea: "rochedo",
-      residentialNumber: "234234",
-      addressDetails: "none",
-      rg: "213123123123",
-      state: "PC",
-      exam: "none",
-      street: "Rua Lais Franco",
-      nextAppointment: "2022-08-05",
-    },
-  ]; */
+    const history = useHistory();
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setDoctor(event.target.value);
@@ -70,8 +45,11 @@ function Patients() {
         console.log("clicou");
     };
 
-    const handleChangePage = (/* event */ newPage: number) => {
-        setPage(newPage);
+    const handleChangePage = (
+        event: React.MouseEvent<HTMLButtonElement, MouseEvent> | null,
+        page: number
+    ) => {
+        setPage(page);
     };
 
     const handleChangeRowsPerPage = (
@@ -80,34 +58,16 @@ function Patients() {
         setRowsPerPage(+event.target.value);
         setPage(0);
     };
-    const [data, setData] = useState<[Types.SubmitForm]>([
-        {
-            value: 1,
-            bdate: "2022-08-05",
-            cellphone: "3194962286",
-            city: "Conselheiro Lafaiete",
-            cpf: "077.898.086-30",
-            email: "romualdo.gui@gmail.com",
-            id: 1,
-            requestedBy: "none",
-            doctor: "Jéssica",
-            agreement: "none",
-            name: "Guilherme Eduardo Abreu Romualdo",
-            residentialArea: "rochedo",
-            residentialNumber: "234234",
-            addressDetails: "none",
-            rg: "213123123123",
-            state: "PC",
-            exam: "none",
-            street: "Rua Lais Franco",
-            nextAppointment: "2022-08-05",
-        },
-    ]);
+    const [data, setData] = useState<[Types.SubmitForm] | []>([]);
     useEffect(() => {
-        fetch("https://us-central1-teppadevchallenge.cloudfunctions.net/patients")
+        fetch(
+            "https://us-central1-teppadevchallenge.cloudfunctions.net/patients"
+        )
             .then(async (response) => {
-                const data = await response.json();
-                console.log("aqui a data", data);
+                const responseData = await response.json();
+                console.log("data", responseData.response);
+                setData(responseData.response);
+                setInfoArrived(true);
             })
             .catch((error) => {
                 console.log("there was an error", error);
@@ -118,30 +78,66 @@ function Patients() {
         setFilterForm(value);
     }
 
-    /* function searchItem(rows: any) {
-    if (InputFilter !== "") {
-      return rows.filter(
-        (row: any) =>
-          row.patient.toLowerCase().indexOf(InputFilter.toLowerCase()) > -1 ||
-          row.cpf.indexOf(InputFilter) > -1
-      );
-    } else return rows;
-  }
-  const filteredData = searchItem(data); */
+    function confirmFilterPatients(e: React.SyntheticEvent) {
+        setInfoArrived(false);
+        const target = e.target as typeof e.target & {
+            cellphone: { value: string };
+            rg: { value: string };
+            email: { value: string };
+            bdate: { value: string };
+        };
+        const result = {
+            cellphone: target.cellphone.value ? target.cellphone.value : null,
+            rg: target.rg.value ? target.rg.value : null,
+            email: target.email.value ? target.email.value : null,
+            bdate: target.bdate.value ? target.bdate.value : null,
+        };
 
-    const handleClickOpen = (value: string) => {
-        setControlId(value);
-        var pos = data
-            .map(function (data) {
-                return data.id;
+        console.log("result", result);
+        fetch(
+            `https://us-central1-teppadevchallenge.cloudfunctions.net/patients/filter/${result.cellphone}/${result.rg}/${result.email}/${result.bdate}`
+        )
+            .then(async (response) => {
+                const responseData = await response.json();
+                setData(responseData.response);
+                setInfoArrived(true);
             })
-            .indexOf(value as unknown as number);
-        console.log(value);
-        console.log(pos);
-        setControl(Number(pos));
+            .catch((error) => {
+                console.log("there was an error", error);
+            });
+    }
+
+    const handleClickOpen = (id: string, index: number) => {
+        setControlId(id);
+        setControlIndex(index);
         setOpen(true);
     };
 
+    function confirmDelete() {
+        const requestOptions = {
+            method: "DELETE",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+                id: ControlId,
+            }),
+        };
+        fetch(
+            "https://us-central1-teppadevchallenge.cloudfunctions.net/patients",
+            requestOptions
+        )
+            .then(function (response) {
+                window.alert("Successfully deleted patient!");
+                window.location.reload();
+                //handle success
+                console.log(response);
+            })
+            .catch(function (response) {
+                //handle error
+                console.log(response);
+            });
+    }
     const handleClose = () => {
         setReadOnly(false);
         setOpen(false);
@@ -155,13 +151,8 @@ function Patients() {
         setDelete(false);
     };
 
-    function confirmDelete() {
-        console.log("confirmDelete");
-    }
-
     function onSubmit(formData: Types.SubmitForm) {
-        formData.id = ControlId;
-        console.log(ControlId);
+        console.log("formData", formData);
     }
     const textFields = [
         {
@@ -275,20 +266,6 @@ function Patients() {
             >
                 <Grid item xs={12} className={classes.gridItem}>
                     <Box className={classes.filterBar}>
-                        <InputBase
-                            className={classes.margin}
-                            value={InputFilter}
-                            onChange={(e) => setInputFilter(e.target.value)}
-                            startAdornment={
-                                <InputAdornment position="start">
-                                    <SearchIcon
-                                        fontSize="large"
-                                        color="action"
-                                    />
-                                </InputAdornment>
-                            }
-                        />
-
                         <IconButton
                             className={classes.iconFilter}
                             color="primary"
@@ -316,10 +293,12 @@ function Patients() {
                         </IconButton>
                     </Box>
                     <Collapse in={FilterForm === 1}>
-                        <PatientsFilterForm
-                            setInfoArrived={setInfoArrived}
-                            handleFilterForm={handleFilterForm}
-                        />
+                        <form
+                            className={classes.form}
+                            onSubmit={confirmFilterPatients}
+                        >
+                            <PatientsFilterForm />
+                        </form>
                     </Collapse>
                 </Grid>
                 <Box
@@ -333,14 +312,14 @@ function Patients() {
                                 container
                                 spacing={3}
                                 className={classes.padding}
-                                justify="flex-start"
+                                justifyContent="flex-start"
                             >
                                 {data
                                     .slice(
                                         page * rowsPerPage,
                                         page * rowsPerPage + rowsPerPage
                                     )
-                                    .map((row) => (
+                                    .map((row, index) => (
                                         <Grid
                                             key={row.id}
                                             item
@@ -356,7 +335,10 @@ function Patients() {
                                                 handleClickOpen={
                                                     handleClickOpen
                                                 }
-                                                id={row.id as string}
+                                                ControlId={
+                                                    row.id as unknown as string
+                                                }
+                                                ControlIndex={index}
                                             />
                                         </Grid>
                                     ))}
@@ -374,25 +356,25 @@ function Patients() {
                                     onSubmit={onSubmit}
                                     register={register}
                                     errors={errors}
-                                    Control={Control}
+                                    ControlIndex={ControlIndex}
                                     control={control}
                                     Doctor={Doctor}
                                     handleChange={handleChange}
                                     Exam={Exam}
                                     handleChangeExam={handleChangeExam}
-                                    data={data}
+                                    data={data as [Types.SubmitForm]}
                                 />
                             </Grid>
-                            {/*  <TablePagination
-                rowsPerPageOptions={[12, 18, 24]}
-                component="div"
-                count={data.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                onChangePage={handleChangePage}
-                onChangeRowsPerPage={handleChangeRowsPerPage}
-                className={classes.pagination}
-              /> */}
+                            <TablePagination
+                                rowsPerPageOptions={[12, 18, 24]}
+                                component="div"
+                                count={data.length}
+                                rowsPerPage={rowsPerPage}
+                                page={page}
+                                onPageChange={handleChangePage}
+                                onRowsPerPageChange={handleChangeRowsPerPage}
+                                className={classes.pagination}
+                            />
                         </>
                     ) : (
                         <>
