@@ -190,9 +190,16 @@ function Patients() {
             shrink: false,
         },
         {
+            id: "rg",
+            label: "RG",
+            value: "rg",
+            type: "text",
+            shrink: false,
+        },
+        {
             id: "email",
-            label: "CPF",
-            value: "cpf",
+            label: "Email",
+            value: "email",
             type: "text",
             shrink: false,
         },
