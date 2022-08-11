@@ -76,7 +76,7 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                             label="Name"
                             fullWidth
                             variant="filled"
-                            value={data[ControlIndex].name}
+                            value={data ? data[ControlIndex].name : ""}
                             InputProps={{
                                 readOnly: true,
                             }}
@@ -89,9 +89,11 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                 margin="normal"
                                 variant="filled"
                                 value={
-                                    data[ControlIndex][
-                                        row.value as keyof Types.SubmitForm
-                                    ]
+                                    data
+                                        ? data[ControlIndex][
+                                              row.value as keyof Types.SubmitForm
+                                          ]
+                                        : ""
                                 }
                                 InputProps={{
                                     readOnly: true,
@@ -174,30 +176,27 @@ export default function PatientsDialog(props: Types.PatientsDialogProps) {
                                     maxLength: 40,
                                 })}
                             />
-                            {errors.name &&
-                                errors.name.type === "required" && (
-                                    <>
-                                        <p className={classes.error}>
-                                            Invalid Name
-                                        </p>
-                                    </>
-                                )}
-                            {errors.name &&
-                                errors.name.type === "minLength" && (
-                                    <>
-                                        <p className={classes.error}>
-                                            This field required min lenght of 5
-                                        </p>
-                                    </>
-                                )}
-                            {errors.name &&
-                                errors.name.type === "maxLength" && (
-                                    <>
-                                        <p className={classes.error}>
-                                            Max length exceeded
-                                        </p>
-                                    </>
-                                )}
+                            {errors.name && errors.name.type === "required" && (
+                                <>
+                                    <p className={classes.error}>
+                                        Invalid Name
+                                    </p>
+                                </>
+                            )}
+                            {errors.name && errors.name.type === "minLength" && (
+                                <>
+                                    <p className={classes.error}>
+                                        This field required min lenght of 5
+                                    </p>
+                                </>
+                            )}
+                            {errors.name && errors.name.type === "maxLength" && (
+                                <>
+                                    <p className={classes.error}>
+                                        Max length exceeded
+                                    </p>
+                                </>
+                            )}
 
                             <TextField
                                 name="cellphone"

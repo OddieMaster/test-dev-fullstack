@@ -50,7 +50,7 @@ function Insert() {
         setExamForm(value);
     };
 
-    const callNext = (value: any) => {
+    const callNext = (value: number) => {
         switch (value) {
             case 1:
                 setPatientForm(false);

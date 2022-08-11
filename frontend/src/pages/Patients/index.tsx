@@ -334,34 +334,60 @@ function Patients() {
                                 className={classes.padding}
                                 justifyContent="flex-start"
                             >
-                                {data
-                                    .slice(
-                                        page * rowsPerPage,
-                                        page * rowsPerPage + rowsPerPage
-                                    )
-                                    .map((row, index) => (
-                                        <Grid
-                                            key={row.id}
-                                            item
-                                            xs={"auto"}
-                                            sm={"auto"}
+                                {data ? (
+                                    <>
+                                        {data
+                                            .slice(
+                                                page * rowsPerPage,
+                                                page * rowsPerPage + rowsPerPage
+                                            )
+                                            .map((row, index) => (
+                                                <Grid
+                                                    key={row.id}
+                                                    item
+                                                    xs={"auto"}
+                                                    sm={"auto"}
+                                                >
+                                                    <PatientsCards
+                                                        name={row.name}
+                                                        nextAppointment={
+                                                            row.nextAppointment
+                                                        }
+                                                        exam={row.exam}
+                                                        handleClickOpen={
+                                                            handleClickOpen
+                                                        }
+                                                        ControlId={
+                                                            row.id as unknown as string
+                                                        }
+                                                        ControlIndex={index}
+                                                    />
+                                                </Grid>
+                                            ))}
+                                    </>
+                                ) : (
+                                    <>
+                                        <Box
+                                            component="span"
+                                            sx={{
+                                                display: "block",
+                                                p: 1,
+                                                m: 1,
+                                                bgcolor: "white",
+                                                color: "grey",
+                                                border: "1px solid",
+                                                borderColor: "grey.800",
+                                                borderRadius: 2,
+                                                fontSize: " 18px",
+                                                fontWeight: "700",
+                                                fontFamily: "Roboto",
+                                            }}
                                         >
-                                            <PatientsCards
-                                                name={row.name}
-                                                nextAppointment={
-                                                    row.nextAppointment
-                                                }
-                                                exam={row.exam}
-                                                handleClickOpen={
-                                                    handleClickOpen
-                                                }
-                                                ControlId={
-                                                    row.id as unknown as string
-                                                }
-                                                ControlIndex={index}
-                                            />
-                                        </Grid>
-                                    ))}
+                                            No patients was found!
+                                        </Box>
+                                    </>
+                                )}
+
                                 <PatientsDialog
                                     open={open}
                                     handleClose={handleClose}
@@ -388,7 +414,7 @@ function Patients() {
                             <TablePagination
                                 rowsPerPageOptions={[12, 18, 24]}
                                 component="div"
-                                count={data.length}
+                                count={data ? data.length : 0}
                                 rowsPerPage={rowsPerPage}
                                 page={page}
                                 onPageChange={handleChangePage}
