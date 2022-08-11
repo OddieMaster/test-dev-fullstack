@@ -17,6 +17,9 @@ class ClientController {
     deletePatients = (idPatient: string) => {
         return clientBusiness.deletePatients(idPatient);
     };
+    getFilteredPatients = (filterParams: Types.Filter) => {
+        return clientBusiness.getFilteredPatients(filterParams);
+    };
 }
 
 export const clientController = new ClientController();

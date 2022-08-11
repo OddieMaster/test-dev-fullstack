@@ -1,10 +1,8 @@
-/* eslint-disable linebreak-style */
-
 interface Patient {
     name: string;
     email: string;
-    /* id: string | number;
-     bdate: string;
+    id: string | undefined;
+    bdate: string;
     cellphone: string;
     city: string;
     cpf: string;
@@ -18,9 +16,14 @@ interface Patient {
     rg: string;
     state: string;
     street: string;
-    nextAppointment: string; */
+    nextAppointment: string;
 }
-
+interface Filter {
+    email: string | null;
+    cellphone: string | null;
+    rg: string | null;
+    bdate: string | null;
+}
 interface MessageTreatment {
     message: string;
     status: number;
@@ -28,4 +31,4 @@ interface MessageTreatment {
     response: any;
 }
 
-export type { Patient, MessageTreatment };
+export type { Patient, MessageTreatment, Filter };

@@ -29,6 +29,63 @@ class ClientDatasource {
                 );
             });
     };
+
+    getFilteredPatients = async (
+        filter: Types.Filter
+    ): Promise<Types.MessageTreatment> => {
+        const patientRef = firestore.collection("patients");
+        console.log("finalfilter", filter);
+
+        if (filter && filter.bdate) {
+            console.log("Entrou2");
+            patientRef.where("bdate", "==", filter.bdate);
+        }
+        if (filter && filter.cellphone) {
+            console.log("Entrou3");
+            patientRef.where("cellphone", "==", filter.cellphone);
+        }
+        if (filter && filter.email) {
+            console.log("Entrou4");
+            patientRef.where("email", "==", filter.email);
+        }
+        if (filter && filter.rg) {
+            console.log("filter.rg", filter.rg);
+            console.log("Entrou5");
+            patientRef.where("rg", "==", filter.rg);
+        }
+
+        const result = await patientRef
+            .get()
+            .then((result) => {
+                const items: admin.firestore.DocumentData[] = [];
+                if (result) {
+                    result.forEach((doc) => {
+                        return items.push({
+                            id: doc.id,
+                            ...doc.data(),
+                        }) as unknown as unknown;
+                    });
+                    if (items.length > 0) {
+                        return messageTreatmentBusiness.sucessMsg(
+                            `Found ${items.length} patients`,
+                            items
+                        );
+                    }
+                }
+                return messageTreatmentBusiness.infoMsg(
+                    "No patient was found "
+                );
+            })
+            .catch((error) => {
+                return messageTreatmentBusiness.erroMsg(
+                    "An erro has ocurried",
+                    error
+                );
+            });
+        /*  console.log("result", result); */
+        return result;
+    };
+
     getPatients = async (): Promise<Types.MessageTreatment> => {
         const patientRef = firestore.collection("patients");
         return await patientRef
@@ -92,7 +149,9 @@ class ClientDatasource {
     };
     deletePatients = async (idPatient: string) => {
         if (!idPatient) {
-            return messageTreatmentBusiness.infoMsg("No id was found");
+            return messageTreatmentBusiness.infoMsg(
+                `No id was found: ${idPatient}`
+            );
         }
         return await firestore
             .collection("patients")

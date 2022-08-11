@@ -17,6 +17,9 @@ class ClientBusiness {
     deletePatients = (idPatient: string) => {
         return clientDatasource.deletePatients(idPatient);
     };
+    getFilteredPatients = (filterParams: Types.Filter) => {
+        return clientDatasource.getFilteredPatients(filterParams);
+    };
 }
 
 export const clientBusiness = new ClientBusiness();
